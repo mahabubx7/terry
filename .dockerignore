@@ -1,0 +1,52 @@
+# Version control
+.git
+.gitignore
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build output
+dist
+build
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.*
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# Test files
+coverage
+*.test.ts
+*.spec.ts
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+README.md
+docs
+*.md
+
+# Temporary files
+tmp
+temp
+*.tmp
+*.temp
+
+# Logs
+logs
+*.log 

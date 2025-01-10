@@ -1,0 +1,48 @@
+{
+  "name": "terry",
+  "version": "1.0.0",
+  "description": "Express.js boilerplate with OpenAPI integration",
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only --ignore-watch node_modules src/index.ts",
+    "build": "rimraf dist && tsc",
+    "start": "node dist/index.js",
+    "start:prod": "NODE_ENV=production node dist/index.js",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "postbuild": "cp package*.json dist/ && cd dist && npm install --omit=dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^7.3.0",
+    "@scalar/express-api-reference": "^0.4.173",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "@types/swagger-ui-express": "^4.1.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-handler": "^1.2.0",
+    "helmet": "^8.0.0",
+    "openapi-typescript": "^7.5.2",
+    "openapi-typescript-validator": "^4.0.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
+    "redoc-express": "^2.1.0",
+    "swagger-ui-express": "^5.0.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3",
+    "zod": "^3.24.1",
+    "zod-to-json-schema": "^3.24.1"
+  },
+  "devDependencies": {
+    "tsconfig-paths": "^4.2.0",
+    "rimraf": "^5.0.5"
+  }
+}
