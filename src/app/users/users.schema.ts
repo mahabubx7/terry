@@ -4,6 +4,7 @@ import { z } from 'zod';
 export const UserSchema = z.object({
   id: z.string().uuid(),
   email: z.string().email(),
+  password: z.string().min(8),  
   name: z.string().min(2),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
@@ -24,10 +25,11 @@ export const UpdateUserSchema = UserSchema.partial().omit({
 }).openapi('UpdateUserRequest');
 
 // User response
-export const UserResponseSchema = UserSchema.openapi('UserResponse');
+export const UserResponseSchema = UserSchema.omit({ password: true }).openapi('UserResponse');
+// export const UserResponseSchema = UserSchema.openapi('UserResponse');
 
 // User list response
-export const UserListResponseSchema = z.array(UserSchema).openapi('UserListResponse');
+export const UserListResponseSchema = z.array(UserSchema.omit({ password: true })).openapi('UserListResponse');
 
 export type User = z.infer<typeof UserSchema>;
 export type CreateUser = z.infer<typeof CreateUserSchema>;

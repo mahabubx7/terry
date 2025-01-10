@@ -1,6 +1,8 @@
-# Express.js OpenAPI Framework
+# Terry
 
-A batteries-included Express.js framework with automatic OpenAPI documentation generation, request/response validation, and API versioning.
+A batteries-included Express.js framework with automatic OpenAPI documentation generation, request/response validation, API versioning, and response serialization.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
@@ -15,6 +17,95 @@ A batteries-included Express.js framework with automatic OpenAPI documentation g
 - 📖 Multiple API documentation UIs (Swagger, ReDoc, Scalar)
 - 🔥 Hot-reload in development
 - 🏭 Production-ready build setup
+- 🔍 Response serialization and transformation
+- ⚙️ Automatic environment configuration
+
+## Response Serialization
+
+Terry includes automatic response serialization and transformation. Each response schema acts as a transformer:
+
+```typescript
+// schema.ts
+import { z } from 'zod';
+
+export const HealthCheckResponse = z.object({
+  status: z.enum(['ok', 'error']),
+  uptime: z.number(),
+  memory: z.object({
+    used: z.number(),
+    total: z.number(),
+  }),
+}).openapi('HealthCheckResponse');
+
+// routes.ts
+{
+  method: 'get',
+  path: '/',
+  schema: {
+    response: HealthCheckResponse,
+  },
+  handler: async (req, res) => {
+    // This will be validated against HealthCheckResponse schema
+    return {
+      status: 'ok',           // Must be 'ok' or 'error'
+      uptime: process.uptime(),
+      memory: {
+        used: 100,
+        total: 1000,
+      }
+    };
+  }
+}
+
+// Invalid responses will throw 422 Unprocessable Entity
+return {
+  status: 'unknown',  // Error: Invalid enum value
+  uptime: 'invalid'   // Error: Expected number, received string
+};
+```
+
+## Environment Configuration
+
+Terry automatically loads environment variables from `.env` file and validates them using Zod:
+
+```typescript
+// config/env.ts
+import { z } from 'zod';
+
+const envSchema = z.object({
+  PORT: z.string().transform(Number).default('3456'),
+  NODE_ENV: z.enum(['development', 'production', 'test']),
+  API_PREFIX: z.string().default('/api'),
+  // ... other validations
+});
+
+// Usage in your code
+import env from '../config/env';
+app.listen(env.PORT);
+```
+
+Create a `.env` file based on `.env.example`:
+
+```env
+# Server
+PORT=3456
+NODE_ENV=development
+
+# API
+API_PREFIX=/api
+
+# Documentation
+DOCS_ENABLED=true
+
+# Security
+CORS_ORIGIN=*
+RATE_LIMIT_WINDOW=15
+RATE_LIMIT_MAX=100
+
+# Logging
+LOG_LEVEL=debug
+PRETTY_LOGGING=true
+```
 
 ## Project Structure
 
@@ -36,7 +127,7 @@ src/
 ├── config/               # Configuration
 │   ├── env.ts           # Environment variables
 │   └── logger.ts        # Logging configuration
-└── index.ts             # Application entry point
+└── main.ts              # Application entry point
 ```
 
 ## Module Structure
@@ -160,26 +251,6 @@ PRETTY_LOGGING=true
 - `npm run format`: Format code
 - `npm run clean`: Clean build directory
 
-## Adding a New Module
-
-1. Create a new directory under `src/app/`
-2. Create two files:
-   - `<module>.schema.ts`: Define your Zod schemas
-   - `<module>.routes.ts`: Define your routes
-
-The framework will automatically:
-- Load your routes
-- Generate OpenAPI documentation
-- Add validation
-- Mount endpoints under `/api/v1/<module>`
-
-## Error Handling
-
-The framework includes built-in error handling for:
-- Validation errors (400)
-- Not found errors (404)
-- Internal server errors (500)
-
 ## Contributing
 
 1. Fork the repository
@@ -190,4 +261,6 @@ The framework includes built-in error handling for:
 
 ## License
 
-ISC 
+Terry is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+Copyright (c) 2024 Cursor Inc. 

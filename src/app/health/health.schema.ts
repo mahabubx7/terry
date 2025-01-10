@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 export const HealthCheckResponse = z.object({
-  status: z.enum(['ok', 'error']).default('ok'),
+  status: z.enum(['ok', 'error']),
   timestamp: z.string().datetime(),
   version: z.string(),
-  uptime: z.number(),
+  uptime: z.number().positive(),
   memory: z.object({
-    used: z.number(),
-    total: z.number(),
+    used: z.number().int().positive(),
+    total: z.number().int().positive(),
   }),
-}).openapi('HealthCheck'); 
+}).openapi('HealthCheckResponse'); 
